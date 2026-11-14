@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A+PPLUS - Learn English Today</title>
+    <!-- Fuente Google: Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --lime-green: #A3E635;
+            --lime-accent: #C0F060;
+            --dark-green: #0F381D;
+            --light-bg: #F3FBEE;
+            --card-bg: #FFFFFF;
+            --text-muted: #6B7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Envoltorio simulador de Smartphone */
+        .mobile-container {
+            width: 100%;
+            max-width: 414px;
+            height: 100vh;
+            max-height: 896px;
+            background-color: var(--light-bg);
+            border-radius: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            border: 8px solid #222;
+        }
+
+        /* Barra de estado simulada */
+        .status-bar {
+            height: 35px;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--dark-green);
+            z-index: 10;
+        }
+
+        /* Área de Contenido Principal */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 90px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        /* Componentes UX/UI */
+        .header-greeting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .user-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--dark-green);
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, var(--lime-green), var(--lime-accent));
+            border-radius: 24px;
+            padding: 20px;
+            position: relative;
+            color: var(--dark-green);
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(163, 230, 53, 0.3);
+        }
+
+        .hero-banner h1 {
+            font-size: 28px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .hero-banner p {
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: var(--dark-green);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            display: inline-block;
+            transition: transform 0.1s ease;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+
+        /* Grid de Habilidades */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .skill-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 120px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            cursor: pointer;
+        }
+
+        .skill-icon {
+            font-size: 28px;
+        }
+
+        .skill-title {
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--dark-green);
+        }
+
+        .skill-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* Banner de Práctica AI */
+        .ai-banner {
+            background-color: var(--dark-green);
+            border-radius: 20px;
+            padding: 16px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            background-color: var(--lime-green);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+        }
+
+        /* Navegación Inferior Fija */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #E5E7EB;
+            z-index: 20;
+            padding-bottom: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            width: 20%;
+        }
+
+        .nav-item.active {
+            color: var(--dark-green);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .badge {
+            position: absolute;
+            top: -2px;
+            right: 18px;
+            background-color: #EF4444;
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Botón Flotante IA */
+        .fab-ai {
+            position: absolute;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            background-color: var(--lime-green);
+            border-radius: 50%;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 30;
+            transition: transform 0.2s;
+        }
+
+        .fab-ai:active {
+            transform: scale(0.9);
+        }
+
+        /* Ventana Emergente de Chat IA */
+        .chat-modal {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: flex-end;
+            flex-direction: column;
+            z-index: 40;
+        }
+
+        .chat-container {
+            background-color: var(--card-bg);
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            height: 75%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: var(--lime-green);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--dark-green);
+            font-weight: 800;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .chat-msg.ai {
+            background-color: #E2F7C2;
+            color: var(--dark-green);
+            align-self: flex-start;
+        }
+
+        .chat-msg.user {
+            background-color: var(--dark-green);
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-footer {
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #E5E7EB;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 20px;
+            border: 1px solid #D1D5DB;
+            outline: none;
+        }
+
+        /* Lección "Touristic Places of Bolivia" */
+        .lesson-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .lesson-header-tag {
+            background-color: var(--lime-green);
+            color: var(--dark-green);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .reading-box {
+            background-color: var(--light-bg);
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 4px solid var(--lime-green);
+            font-size: 13px;
+            color: var(--dark-green);
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .audio-player-btn {
+            background-color: var(--dark-green);
+            color: white;
+            padding: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .input-exercise {
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #D1D5DB;
+            margin-top: 6px;
+            font-size: 13px;
+        }
+
+        .feedback-box {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+        }
+
+        .feedback-box.correct {
+            background-color: #DEF7EC;
+            color: #03543F;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    <!-- Barra de Estado Simulada -->
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>📶 🔋</span>
+    </div>
+
+    <!-- ÁREA DE CONTENIDO DE LAS PANTALLAS -->
+    <div class="content-area">
+        
+        <!-- PANTALLA 1: HOME -->
+        <div id="screen-home" class="screen active">
+            <div class="header-greeting">
+                <div>
+                    <div style="font-size: 12px; color: var(--text-muted);">Welcome back!</div>
+                    <div class="user-title">Hi, Alex! 👋</div>
+                </div>
+                <div style="font-size: 20px; cursor: pointer;">⚙️</div>
+            </div>
+
+            <!-- Banner Principal APPLUS -->
+            <div class="hero-banner">
+                <h1>A+PPLUS</h1>
+                <p>Learn English, Go Further!</p>
+                <button class="btn-primary" onclick="navigateTo('practice')">Continue Lesson</button>
+            </div>
+
+            <!-- Grid de Habilidades (Listening, Speaking, Reading, Writing) -->
+            <div class="skills-grid">
+                <div class="skill-card" onclick="navigateTo('practice')">
+                    <div class="skill-icon">🎧</div>
+                    <div>
+                        <div class="skill-title">Listening</div>
+                        <div class="skill-sub">Listen and understand</div>
+                    </div>
+                </div>
+                <div class="skill-card" onclick="navigateTo('practice')">
+                    <div class="skill-icon">🤖</div>
+                    <div>
+                        <div class="skill-title">Speaking</div>
+                        <div class="skill-sub">Practice with AI</div>
+                    </div>
+                </div>
+                <div class="skill-card" onclick="navigateTo('practice')">
+                    <div class="skill-icon">📖</div>
+                    <div>
+                        <div class="skill-title">Reading</div>
+                        <div class="skill-sub">Read and learn</div>
+                    </div>
+                </div>
+                <div class="skill-card" onclick="navigateTo('practice')">
+                    <div class="skill-icon">✏️</div>
+                    <div>
+                        <div class="skill-title">Writing</div>
+                        <div class="skill-sub">Write and improve</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Banner Práctica de IA -->
+            <div class="ai-banner">
+                <div class="ai-avatar">🤖</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 800; font-size: 14px;">AI Speaking Practice</div>
+                    <div style="font-size: 11px; opacity: 0.8;">Talk, get feedback, improve!</div>
+                </div>
+                <span style="font-size: 18px; color: var(--lime-green); cursor: pointer;" onclick="openChat()">➔</span>
+            </div>
+        </div>
+
+        <!-- PANTALLA 2: PRACTICE (LECCIÓN "TOURISTIC PLACES OF BOLIVIA") -->
+        <div id="screen-practice" class="screen">
+            <div class="user-title" style="margin-bottom: 16px;">Practice & Lessons</div>
+
+            <!-- Módulo de Lección Completa -->
+            <div class="lesson-card">
+                <span class="lesson-header-tag">LESSON 3 • BOLIVIA TOURISM</span>
+                <h2 style="color: var(--dark-green); font-size: 18px; margin-top: 4px;">Touristic Places of Bolivia</h2>
+                
+                <!-- 1. Reading Module -->
+                <div style="margin-top: 14px;">
+                    <h3 style="font-size: 14px; color: var(--dark-green);">📖 1. Reading: A Weekend Outside</h3>
+                    <div class="reading-box">
+                        Mateo and Lucía visited <b>Salar de Uyuni</b> and rode <b>Mi Teleférico</b> in La Paz. They enjoyed viewing the Illimani mountain from Tiwanaku!
+                    </div>
+                </div>
+
+                <!-- 2. Listening Module -->
+                <div style="margin-top: 16px;">
+                    <h3 style="font-size: 14px; color: var(--dark-green);">🎧 2. Listening Exercise</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Listen to the sentence and complete the answer below:</p>
+                    <div class="audio-player-btn" onclick="playAudioText('Salar de Uyuni is the largest salt flat in the world.')">
+                        🔊 Tap to Listen Audio
+                    </div>
+                </div>
+
+                <!-- 3. Writing Exercise Module -->
+                <div style="margin-top: 16px;">
+                    <h3 style="font-size: 14px; color: var(--dark-green);">✏️ 3. Writing Practice</h3>
+                    <p style="font-size: 12px; color: var(--dark-green); margin-top: 4px;"><b>Question:</b> What is the famous salt flat in Bolivia?</p>
+                    <input type="text" id="writing-input" class="input-exercise" placeholder="Type your answer in English...">
+                    <button class="btn-primary" style="width: 100%; margin-top: 8px;" onclick="checkWritingAnswer()">Submit Answer</button>
+                    <div id="writing-feedback" class="feedback-box"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 3: PROGRESS -->
+        <div id="screen-progress" class="screen">
+            <div class="user-title" style="margin-bottom: 16px;">Your Progress 📈</div>
+            <div class="lesson-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Study Streak</div>
+                        <div style="font-size: 24px; font-weight: 800; color: var(--dark-green);">🔥 5 Days</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: var(--text-muted);">Total XP</div>
+                        <div style="font-size: 24px; font-weight: 800; color: var(--dark-green);">⭐ 450 XP</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <h3 style="font-size: 14px; color: var(--dark-green); margin-bottom: 8px;">Learning Path Map</h3>
+                <div style="font-size: 13px; line-height: 2;">
+                    🔵 Lesson 1: Basic Greetings (Completed)<br>
+                    🔵 Lesson 2: Family & Friends (Completed)<br>
+                    🟢 <b>Lesson 3: Touristic Places (Current)</b><br>
+                    ⚪ Lesson 4: Daily Routines (Locked)
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 4: NOTIFICATIONS -->
+        <div id="screen-notifications" class="screen">
+            <div class="user-title" style="margin-bottom: 16px;">Notifications 🔔</div>
+            <div class="lesson-card" style="display: flex; gap: 12px; align-items: center;">
+                <span style="font-size: 24px;">🎉</span>
+                <div>
+                    <div style="font-weight: 800; font-size: 13px; color: var(--dark-green);">You completed Lesson 2!</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Keep up the great work.</div>
+                </div>
+            </div>
+            <div class="lesson-card" style="display: flex; gap: 12px; align-items: center;">
+                <span style="font-size: 24px;">⏰</span>
+                <div>
+                    <div style="font-weight: 800; font-size: 13px; color: var(--dark-green);">Your daily goal is waiting!</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Practice 5 minutes today.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANTALLA 5: PROFILE -->
+        <div id="screen-profile" class="screen">
+            <div class="user-title" style="margin-bottom: 16px;">Profile 👤</div>
+            <div class="lesson-card" style="text-align: center;">
+                <div style="width: 80px; height: 80px; background-color: var(--lime-green); border-radius: 50%; margin: 0 auto 12px auto; display: flex; justify-content: center; align-items: center; font-size: 36px;">👦</div>
+                <h2 style="font-size: 18px; color: var(--dark-green);">Alex Student</h2>
+                <p style="font-size: 12px; color: var(--text-muted);">alex.student@email.com</p>
+                <span class="lesson-header-tag" style="margin-top: 8px;">Level A1 • Basic English</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BOTÓN FLOTANTE IA -->
+    <div class="fab-ai" onclick="openChat()">🤖</div>
+
+    <!-- VENTANA EMERGENTE CHAT IA -->
+    <div id="chatModal" class="chat-modal">
+        <div class="chat-container">
+            <div class="chat-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>🤖</span>
+                    <span>APPLUS AI Tutor</span>
+                </div>
+                <span style="cursor: pointer; font-size: 20px;" onclick="closeChat()">✕</span>
+            </div>
+            <div class="chat-body" id="chatBody">
+                <div class="chat-msg ai">Hi Alex! 👋 I'm your AI English Tutor. How can I help you with your lessons today?</div>
+            </div>
+            <div class="chat-footer">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Ask in English..." onkeypress="handleChatKey(event)">
+                <button class="btn-primary" style="margin-top:0; padding: 10px 16px;" onclick="sendChatMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVEGACIÓN INFERIOR FIJA (5 OPCIONES) -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="navigateTo('home', this)">
+            <span class="nav-icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('practice', this)">
+            <span class="nav-icon">🎯</span>
+            <span>Practice</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('progress', this)">
+            <span class="nav-icon">📊</span>
+            <span>Progress</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('notifications', this)">
+            <span class="nav-icon">🔔</span>
+            <span class="badge">2</span>
+            <span>Notifications</span>
+        </div>
+        <div class="nav-item" onclick="navigateTo('profile', this)">
+            <span class="nav-icon">👤</span>
+            <span>Profile</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cambio entre Pantallas
+    function navigateTo(screenId, targetEl) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById('screen-' + screenId).classList.add('active');
+
+        if(targetEl) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            targetEl.classList.add('active');
+        }
+    }
+
+    // Funcionalidad de Voz Sintetizada para Listening
+    function playAudioText(text) {
+        if ('speechSynthesis' in window) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        } else {
+            alert("Audio reproduce: " + text);
+        }
+    }
+
+    // Evaluación automática del ejercicio de Writing
+    function checkWritingAnswer() {
+        const input = document.getElementById('writing-input').value.trim().toLowerCase();
+        const feedback = document.getElementById('writing-feedback');
+        
+        if (input.includes('uyuni') || input.includes('salar')) {
+            feedback.className = "feedback-box correct";
+            feedback.innerHTML = "✨ Correct! 'Salar de Uyuni' is right. +10 XP";
+        } else {
+            feedback.className = "feedback-box correct";
+            feedback.style.backgroundColor = "#FDE8E8";
+            feedback.style.color = "#9B1C1C";
+            feedback.innerHTML = "💡 Try again! Hint: It starts with 'Salar de...'";
+        }
+    }
+
+    // Modal del Chat IA
+    function openChat() {
+        document.getElementById('chatModal').style.display = 'flex';
+    }
+
+    function closeChat() {
+        document.getElementById('chatModal').style.display = 'none';
+    }
+
+    function handleChatKey(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        const body = document.getElementById('chatBody');
+        
+        // Agregar mensaje del usuario
+        const userMsg = document.createElement('div');
+        userMsg.className = 'chat-msg user';
+        userMsg.innerText = text;
+        body.appendChild(userMsg);
+
+        input.value = '';
+        body.scrollTop = body.scrollHeight;
+
+        // Respuesta simulada de la IA
+        setTimeout(() => {
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'chat-msg ai';
+            aiMsg.innerText = "Great question! Keep practicing your English vocabulary daily!";
+            body.appendChild(aiMsg);
+            body.scrollTop = body.scrollHeight;
+        }, 800);
+    }
+</script>
+</body>
+</html>
